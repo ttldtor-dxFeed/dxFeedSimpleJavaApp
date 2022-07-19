@@ -17,20 +17,18 @@ public class QDService {
     }
 
     public void testTnsSubscription(String address, List<String> symbols, long timeout) throws InterruptedException {
-        logger.info("QDService: TnsSub: Connecting");
+        logger.info("TnsSub: Connecting");
 
         try (DXEndpoint endpoint = DXEndpoint.newBuilder()
                 .build()
                 .connect(address)) {
             try (DXFeedTimeSeriesSubscription<TimeAndSale> sub = endpoint.getFeed().createTimeSeriesSubscription(TimeAndSale.class)) {
                 sub.setFromTime(0L);
-                sub.addEventListener(items -> {
-                    speedometer.addEvents(items.size());
-                });
+                sub.addEventListener(items -> speedometer.addEvents(items.size()));
                 sub.addSymbols(symbols);
                 long calculatedTimeout = timeout == 0L ? 1000000L : timeout;
                 Thread.sleep(calculatedTimeout * 1000);
-                logger.info("QDService: TnsSub: Disconnecting");
+                logger.info("TnsSub: Disconnecting");
             }
         }
     }
